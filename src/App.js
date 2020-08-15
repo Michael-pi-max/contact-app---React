@@ -1,43 +1,45 @@
 import React, { Component } from 'react';
 import ListContacts from './ListContacts';
-
+import CreateContact from './CreateContact';
+import { Route } from 'react-router-dom';
+import * as ContactApi from './utils/contactsAPI';
 
 
 class App extends Component {
+
+  componentDidMount() {
+    ContactApi.getAll().then((contacts) => {
+      this.setState({ contacts })
+    })
+  }
+
   state = {
-    contacts: [
-      {
-        "id": "ryan",
-        "name": "Ryan Florence",
-        "email": "ryan@reacttraining.com",
-        "avatarURL": "http://localhost:5001/ryan.jpg"
-      },
-      {
-        "id": "michael",
-        "name": "Michael Jackson",
-        "email": "michael@reacttraining.com",
-        "avatarURL": "http://localhost:5001/michael.jpg"
-      },
-      {
-        "id": "tyler",
-        "name": "Tyler McGinnis",
-        "email": "tyler@reacttraining.com",
-        "avatarURL": "http://localhost:5001/tyler.jpg"
-      }
-    ]
+    contacts: []
   }
 
   removeContact = (contact) => {
-    this.setState( (prevState) => ({
-      contacts: prevState.contacts.filter ( (c) => {
+    this.setState((prevState) => ({
+      contacts: prevState.contacts.filter((c) => {
         return c.id !== contact
       })
     }))
+
+    ContactApi.remove(contact)
   }
 
   render() {
     return (
-      <ListContacts contacts={this.state.contacts} onDeleteContact={this.removeContact}/>
+      <div className="app">
+        <Route exact path="/" render={
+          () => (
+            <ListContacts
+              contacts={this.state.contacts}
+              onDeleteContact={this.removeContact}
+            />
+          )
+        } />
+        <Route path="/create" component={CreateContact}/>      
+      </div>
     )
   }
 }
