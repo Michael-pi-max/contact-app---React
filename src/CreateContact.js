@@ -9,7 +9,7 @@ class CreateContact extends Component {
         e.preventDefault();
         const values = serializeForm(e.target, {hash: true});
         if (this.props.onCreateContact){
-            this.props.onCreateContact(values);
+            this.props.onCreateContact(values)
         }
     }
 
